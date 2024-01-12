@@ -1,6 +1,5 @@
 # app.py
 import tkinter as tk
-from tkinter import ttk
 from view import StartScreen, MenuScreen
 from pygame import mixer
 from PIL import Image, ImageTk

@@ -2,28 +2,46 @@
 
 import time
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import simpledialog, messagebox
 from model import load_text, save_highscore, get_highscore
 
 def wpm_test(master):
-    def calculate_wpm(end_time, start_time, text_entered):
-        words = len(text_entered.split())
+    def calculate_wpm(end_time, start_time, text_entered, text_original):
+        words = len(text_original.split())
         time_elapsed = end_time - start_time
         wpm = round((words / time_elapsed) * 60)
-        return wpm
+
+        # Calculate errors
+        errors = sum(1 for a, b in zip(text_entered, text_original) if a != b)
+        return wpm, errors
+
+    def prompt_for_nickname(wpm):
+        nickname = simpledialog.askstring("New Highscore!", f"Congratulations! Your speed: {wpm} WPM. Enter your nickname:",
+                                          parent=top)
+        return nickname
 
     def submit_text():
         end_time = time.time()
-        text_entered = text_entry.get("1.0", tk.END)
-        wpm = calculate_wpm(end_time, start_time, text_entered)
+        text_entered = text_entry.get("1.0", tk.END).strip()
+        wpm, errors = calculate_wpm(end_time, start_time, text_entered, text_to_type)
         highscore = get_highscore()
-        if highscore is None or wpm > highscore:
-            save_highscore(wpm, "YourName")  # Replace with a method to get the user's name
-            messagebox.showinfo("New Highscore!", f"Congratulations! Your new highscore is {wpm} WPM.")
-        else:
-            messagebox.showinfo("Result", f"Your speed: {wpm} WPM. Highscore: {highscore} WPM.")
+        message = f"Your speed: {wpm} WPM with {errors} errors."
 
-        top.destroy()
+        if highscore is None or wpm > highscore:
+            nickname = prompt_for_nickname(wpm)
+            if nickname:
+                save_highscore(wpm, nickname)
+                message += f"\nCongratulations, {nickname}! Your new highscore is {wpm} WPM."
+            else:
+                message += "\nHighscore not saved as no nickname was entered."
+
+        messagebox.showinfo("Result", message)
+        restart_test()
+
+    def restart_test():
+        nonlocal start_time
+        text_entry.delete("1.0", tk.END)
+        start_time = time.time()
 
     top = tk.Toplevel(master)
     top.title("WPM Test")

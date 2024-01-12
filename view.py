@@ -2,6 +2,7 @@
 import time
 import tkinter as tk
 from tkinter import messagebox
+from controller import wpm_test
 from model import get_highscore, load_text
 
 
@@ -41,7 +42,8 @@ class MenuScreen(tk.Frame):
         self.master.geometry("1200x800")
         self.master.configure(bg='black')
 
-        menu_label = tk.Label(self.master, text="How fast you think you can type? Select difficulty level:",
+        # menu_label = tk.Label(self.master, text="How fast you think you can type? Select difficulty level:",
+        menu_label = tk.Label(self.master, text="How fast you think you can type?",
                               font=("Helvetica", 16), fg="white", bg="black")
         menu_label.pack(padx=20, pady=20)
 
@@ -50,17 +52,18 @@ class MenuScreen(tk.Frame):
         buttonframe.rowconfigure(0, weight=1)
         buttonframe.rowconfigure(1, weight=1)
         buttonframe.rowconfigure(2, weight=1)
-        buttonframe.rowconfigure(3, weight=1)
+        # buttonframe.rowconfigure(3, weight=1)
 
-        button1 = tk.Button(buttonframe, text="Fast and Furious!  (easy mode - typing speed only)",
+        # button1 = tk.Button(buttonframe, text="Fast and Furious!  (easy mode - typing speed only)",
+        button1 = tk.Button(buttonframe, text="Play game",
                             font=("Helvetica", 14), fg="white", bg="black",
-                            command=lambda: display_text(0))
+                            command=self.start_wpm_test)
         button1.grid(row=1, column=0, sticky=tk.W + tk.E)
 
-        button2 = tk.Button(buttonframe, text="Watch your steps!  (hard mode - typing speed + errors counter)",
-                            font=("Helvetica", 14), fg="white", bg="black",
-                            command=lambda: self.display_message("Button 2"))
-        button2.grid(row=2, column=0, sticky=tk.W + tk.E)
+        # button2 = tk.Button(buttonframe, text="Watch your steps!  (hard mode - typing speed + errors counter)",
+        #                     font=("Helvetica", 14), fg="white", bg="black",
+        #                     command=lambda: self.display_message("Button 2"))
+        # button2.grid(row=2, column=0, sticky=tk.W + tk.E)
 
         button3 = tk.Button(buttonframe, text="Current highscore",
                             font=("Helvetica", 14), fg="white", bg="black", command=self.display_highscore_message)
@@ -93,7 +96,11 @@ class MenuScreen(tk.Frame):
         messagebox.showinfo("Exiting", "Closing the application...")
         self.master.destroy()
 
-# def display_text(root, target, wpm):
+    def start_wpm_test(self):
+        # Wywołaj funkcję wpm_test z aktualnym obiektem Tkinter (self.master)
+        wpm_test(self.master)
+
+
 def display_text(wpm):
     # Wczytaj losowy ciąg znaków z modelu
     target_text = load_text()

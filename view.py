@@ -2,7 +2,7 @@
 import time
 import tkinter as tk
 from tkinter import messagebox
-from model import get_highscore
+from model import get_highscore, load_text
 
 
 class StartScreen(tk.Frame):
@@ -54,7 +54,7 @@ class MenuScreen(tk.Frame):
 
         button1 = tk.Button(buttonframe, text="Fast and Furious!  (easy mode - typing speed only)",
                             font=("Helvetica", 14), fg="white", bg="black",
-                            command=lambda: self.display_message("Button 1"))
+                            command=lambda: display_text(0))
         button1.grid(row=1, column=0, sticky=tk.W + tk.E)
 
         button2 = tk.Button(buttonframe, text="Watch your steps!  (hard mode - typing speed + errors counter)",
@@ -93,26 +93,53 @@ class MenuScreen(tk.Frame):
         messagebox.showinfo("Exiting", "Closing the application...")
         self.master.destroy()
 
+# def display_text(root, target, wpm):
+def display_text(wpm):
+    # Wczytaj losowy ciąg znaków z modelu
+    target_text = load_text()
+    current_text = target_text
 
-def display_text(root, target, wpm):
-    root.title("Typing Game")
-    root.geometry("800x600")
-    root.configure(bg='black')
+    # Tworzenie nowego okna Toplevel
+    top = tk.Toplevel()
+    top.title("Fast and Furious test!")
+    top.geometry("800x600")
+    top.configure(bg='black')
 
-    # Usuń istniejące elementy z okna głównego (jeśli są)
-    for widget in root.winfo_children():
+    # Usuń istniejące elementy z nowego okna (jeśli są)
+    for widget in top.winfo_children():
         widget.destroy()
 
     # Etykieta z tekstem do przepisania
-    text_to_write = tk.Label(root, text=target,
+    text_to_write = tk.Label(top, text=target_text,
                              font=("Helvetica", 16), fg="white", bg="black")
     text_to_write.pack(padx=20, pady=20)
 
     # Pole tekstowe do wprowadzania tekstu
-    textbox = tk.Text(root, height=3, font=("Helvetica", 14))
+    textbox = tk.Text(top, height=3, font=("Helvetica", 14))
     textbox.pack(padx=40, pady=40)
 
     # Etykieta z aktualnym WPM
-    wpm_counter = tk.Label(root, text=f"WPM: {wpm}",
+    wpm_counter = tk.Label(top, text=f"WPM: {wpm}",
                            font=("Helvetica", 16), fg="white", bg="black")
     wpm_counter.pack()
+
+    reset_button = tk.Button(top, text="Reset", font=("Helvetica", 14), fg="white", bg="black",
+                             command=lambda: reset_text(text_to_write, textbox, wpm_counter, current_text))
+    reset_button.pack()
+
+
+def reset_text(text_label, text_box, wpm_label, current_text):
+    new_text = load_text()
+
+    # Sprawdź, czy nowy tekst jest różny od obecnego
+    while new_text == current_text:
+        new_text = load_text()
+
+    # Zaktualizuj etykietę z tekstem
+    text_label.config(text=new_text)
+
+    # Wyczyść pole tekstowe
+    text_box.delete(1.0, tk.END)
+
+    # Zaktualizuj etykietę z WPM
+    wpm_label.config(text="WPM: 0")

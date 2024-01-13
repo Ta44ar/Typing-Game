@@ -20,9 +20,23 @@ def wpm_test(master):
                                           parent=top)
         return nickname
 
+    def highlight_text():
+        text_entered = text_entry.get("1.0", tk.END)
+        text_entry.tag_remove("correct", "1.0", tk.END)
+        text_entry.tag_remove("incorrect", "1.0", tk.END)
+
+        for i, (char_entered, char_original) in enumerate(zip(text_entered, text_to_type)):
+            tag = "correct" if char_entered == char_original else "incorrect"
+            text_entry.tag_add(tag, f"1.{i}", f"1.{i + 1}")
+
     def submit_text():
         end_time = time.time()
         text_entered = text_entry.get("1.0", tk.END).strip()
+        # Weryfikacja czy tekst został w pełni wpisany
+        if text_entered != text_to_type:
+            messagebox.showwarning("Warning", "Text does not match the source. Please check again.")
+            return
+
         wpm, errors = calculate_wpm(end_time, start_time, text_entered, text_to_type)
         highscore = get_highscore()
         message = f"Your speed: {wpm} WPM with {errors} errors."
@@ -45,6 +59,8 @@ def wpm_test(master):
 
     top = tk.Toplevel(master)
     top.title("WPM Test")
+    top.geometry("1200x1000+250+100")
+    top.configure(bg='black')
 
     text_to_type = load_text()
     if text_to_type is None:
@@ -53,14 +69,18 @@ def wpm_test(master):
 
     start_time = time.time()
 
-    instruction_label = tk.Label(top, text="Type the text below as fast as you can:")
-    instruction_label.pack()
+    instruction_label = tk.Label(top, text="Type the text below as fast as you can:", font=("Helvetica", 14), fg="white", bg="black")
+    instruction_label.pack(padx=20, pady = 20)
 
-    text_label = tk.Label(top, text=text_to_type, wraplength=500)
-    text_label.pack()
+    text_label = tk.Label(top, text=text_to_type, font=("Helvetica", 20), fg="white", bg="black")
+    text_label.pack(padx=20, pady=20)
 
-    text_entry = tk.Text(top, height=10, width=50)
-    text_entry.pack()
+    text_entry = tk.Text(top, height=3, font=("Helvetica", 20))
+    text_entry.pack(padx=20, pady=20)
+    text_entry.bind("<KeyRelease>", lambda event: highlight_text())
 
-    submit_button = tk.Button(top, text="Submit", command=submit_text)
-    submit_button.pack()
+    text_entry.tag_configure("correct", foreground="green")
+    text_entry.tag_configure("incorrect", foreground="red")
+
+    submit_button = tk.Button(top, text="Submit", font=("Helvetica", 14), fg="white", bg="black", command=submit_text)
+    submit_button.pack(padx=20, pady=20)

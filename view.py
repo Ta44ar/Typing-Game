@@ -14,7 +14,7 @@ class StartScreen(tk.Frame):
 
     def create_widgets(self):
         self.master.title("Typing Game")
-        self.master.geometry("1200x800")
+        self.master.geometry("1200x800+200+200")
         self.master.configure(bg='black')
 
         title_label = tk.Label(self.master, text="Super Mega Impressive Typing Game Deluxe!", font=("Helvetica", 24),
@@ -109,7 +109,7 @@ def display_text(wpm):
     # Tworzenie nowego okna Toplevel
     top = tk.Toplevel()
     top.title("Fast and Furious test!")
-    top.geometry("800x600")
+    top.geometry("800x600+200+200")
     top.configure(bg='black')
 
     # Usuń istniejące elementy z nowego okna (jeśli są)

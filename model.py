@@ -23,15 +23,15 @@ def get_highscore():
     try:
         with open(HIGHSCORE_FILE, 'r') as file:
             content = file.read().strip()
-            highscore_str, _ = content.split(':')
+            highscore_str, nickname = content.split(':')
             highscore = int(highscore_str)
-            return highscore
+            return highscore, nickname  # Zwraca teraz zarówno wynik, jak i nickname
     except FileNotFoundError:
         logging.error(f"File not found: {HIGHSCORE_FILE}")
-        return None
+        return None, None  # Zwraca None dla obu wartości, jeśli plik nie istnieje
     except Exception as e:
         logging.error(f"An error occurred: {e}")
-        return None
+        return None, None
 
 
 def save_highscore(score, nickname):

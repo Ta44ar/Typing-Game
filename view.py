@@ -81,8 +81,11 @@ class MenuScreen(tk.Frame):
 
     def display_highscore_message(self):
         try:
-            highscore = self.get_highscore()
-            messagebox.showinfo("Highscore", f"Current highscore is {highscore} WPM.")
+            highscore, nickname = self.get_highscore()
+            if highscore is not None:
+                messagebox.showinfo("Highscore", f"Current highscore is {highscore} WPM by {nickname}.")
+            else:
+                messagebox.showinfo("Highscore", "No highscore set yet.")
         except FileNotFoundError as e:
             messagebox.showerror("Error", f"Highscore file not found. {str(e)}")
         except Exception as e:

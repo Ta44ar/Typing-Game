@@ -1,2 +1,3 @@
 # Typing-Game
-Simple app to test your typing skills. Prepared in two versions - one made in terminal window with curses library, the other is windowed app made using tkinter library.
+Simple app to test your typing skills. This one is window app made using tkinter library.
+Another version is made in terminal window (https://github.com/Ta44ar/Typing-Game-in-terminal) with curses library.
